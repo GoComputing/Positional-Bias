@@ -1,18 +1,57 @@
+# Order Matters: The Impact of Positional Bias in LLM-Based Recommender Systems
+
+> **Authors**: Carlos Peláez-González, Andrés Herrera-Poyatos, Francisco Herrera Triguero
+> **Conference/Journal**: 
+> **Code License**: 
+
+---
+
+## 📄 Abstract
+
+Large Language Models (LLMs) have demonstrated impressive capabilities across a wide range of natural language tasks, including their use in building recommender systems (RS). Among these, conversational RS allow users to express preferences via text, enabling personalized item recommendations without model retraining. However, as black-box systems, LLM-based RS can exhibit hidden biases that compromise their reliability. This paper investigates positional bias—how the order of items in the prompt affects recommendation outcomes. We propose two methodologies: one based on contingency matrix analysis with statistical independence testing, and another grounded in a uniformity assumption. Our results reveal a consistent positional bias in LLM-based RS, even when item relevance is constant. These findings highlight the need for deeper auditing of prompt-based recommendation pipelines.
+
+---
+
+## 🏗️ Project Structure
+
+```bash
+├── data/               # [Auto-generated] Includes amazon index and user queries
+├── results/            # [Auto-generated] Output logs, checkpoints, metrics
+├── scripts/            # Dataset creation and bias evaluation code
+├── notebooks/          # Jupyter notebooks for analysis/visualization
+├── src/                # Common source code for the scripts
+├── environment.yml     # Python dependencies (conda)
+└── README.md           # This file
+```
+
+---
+
+In order to replicate the paper results, the following steps should be followed.
+
  1. Configure environment
-    $ conda env create -n llm_positional_bias -f environment.yml
-    $ conda activate llm_bias_attack
-    $ export PYTHONPATH="$(pwd)/src"
- 2. Generate search engine
-    $ python scripts/dataset_creation/create_index.py -d data/dataset/train.csv -o data/amazon_index
- 3. Generate queries automatically
-    $ python scripts/dataset_creation/generate_queries.py -o data/generated_queries.json
- 4. Create evaluation dataset
-    $ mkdir data/shuffled_products
-    $ python scripts/dataset_creation/sample_products_shuffles.py -i data/generated_queries.json -s data/amazon_index/ -o data/shuffled_products --output-name position_bias__share -n 0 -k 5 --share-permutations
- 5. Launch Ollama and pull model/s (available models at https://ollama.com/library?sort=newest)
-    $ docker pull ollama/ollama:0.11.4
-    $ ./launch_ollama
-    $ docker exec ollama0 ollama pull <MODEL_NAME>
- 6. Generate evaluation
-    $ mkdir -p results/position_bias__share
-    $ python scripts/evaluation/evaluate_bias.py -i data/shuffled_products/position_bias__share.json -m <MODEL_NAME> -o results/position_bias__share/evaluation_<MODEL_NAME>.json
+    `conda env create -n llm_positional_bias -f environment.yml`
+    `conda activate llm_bias_attack`
+    `export PYTHONPATH="$(pwd)/src"`
+ 2. Download products dataset
+    `mkdir -p data/dataset`
+    `# Download from https://www.kaggle.com/datasets/ashisparida/amazon-ml-challenge-2023`
+    `# Uncompress and place the CSV at data/dataset/train.csv`
+ 3. Generate search engine
+    `python scripts/dataset_creation/create_index.py -d data/dataset/train.csv -o data/amazon_index`
+ 4. Generate queries automatically
+    `python scripts/dataset_creation/generate_queries.py -o data/generated_queries.json`
+ 5. Create evaluation dataset
+    `mkdir data/shuffled_products`
+    `python scripts/dataset_creation/sample_products_shuffles.py -i data/generated_queries.json -s data/amazon_index/ -o data/shuffled_products --output-name position_bias__share -n 0 -k 5 --share-permutations`
+ 6. Launch Ollama and pull model/s (available models at https://ollama.com/library?sort=newest)
+    `docker pull ollama/ollama:0.11.4`
+    `./launch_ollama`
+    `docker exec ollama0 ollama pull <MODEL_NAME>`
+ 7. Process queries and associated products with one LLM (evaluate the LLM)
+    `mkdir -p results/position_bias__share`
+    `python scripts/evaluation/evaluate_bias.py -i data/shuffled_products/position_bias__share.json -m <MODEL_NAME> -o results/position_bias__share/evaluation_<MODEL_NAME>.json`
+ 8. Analyze the data
+    `mkdir figures`
+    `jupyter-notebook`
+    `# Open the notebook notebooks/initialBias_analysis.ipynb`
+    `# Execute the cells to generate the provided results`
