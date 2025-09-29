@@ -30,6 +30,8 @@ Large Language Models (LLMs) have demonstrated impressive capabilities across a 
 
 ---
 
+## 🔧 Reproducibility commands
+
 In order to replicate the paper results, the following steps should be followed.
 
  1. Configure environment
@@ -78,6 +80,8 @@ In order to replicate the paper results, the following steps should be followed.
      ```
 
 ---
+
+## ✏️ How to reference this work
 
 If you find this work useful for your research, please cite it as the following.
 
