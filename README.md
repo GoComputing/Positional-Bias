@@ -1,7 +1,11 @@
 # Order Matters: The Impact of Positional Bias in LLM-Based Recommender Systems
 
+This code allow the reproducibility of the experiments performed for bias detection in recommender systems based on Large Language Models.
+
 > **Authors**: Carlos Peláez-González, Andrés Herrera-Poyatos, Francisco Herrera Triguero
+> 
 > **Conference/Journal**: 
+>
 > **Code License**: 
 
 ---
@@ -29,29 +33,54 @@ Large Language Models (LLMs) have demonstrated impressive capabilities across a 
 In order to replicate the paper results, the following steps should be followed.
 
  1. Configure environment
-    `conda env create -n llm_positional_bias -f environment.yml`
-    `conda activate llm_bias_attack`
-    `export PYTHONPATH="$(pwd)/src"`
- 2. Download products dataset
-    `mkdir -p data/dataset`
-    `# Download from https://www.kaggle.com/datasets/ashisparida/amazon-ml-challenge-2023`
-    `# Uncompress and place the CSV at data/dataset/train.csv`
- 3. Generate search engine
-    `python scripts/dataset_creation/create_index.py -d data/dataset/train.csv -o data/amazon_index`
- 4. Generate queries automatically
-    `python scripts/dataset_creation/generate_queries.py -o data/generated_queries.json`
- 5. Create evaluation dataset
-    `mkdir data/shuffled_products`
-    `python scripts/dataset_creation/sample_products_shuffles.py -i data/generated_queries.json -s data/amazon_index/ -o data/shuffled_products --output-name position_bias__share -n 0 -k 5 --share-permutations`
- 6. Launch Ollama and pull model/s (available models at https://ollama.com/library?sort=newest)
-    `docker pull ollama/ollama:0.11.4`
-    `./launch_ollama`
-    `docker exec ollama0 ollama pull <MODEL_NAME>`
- 7. Process queries and associated products with one LLM (evaluate the LLM)
-    `mkdir -p results/position_bias__share`
-    `python scripts/evaluation/evaluate_bias.py -i data/shuffled_products/position_bias__share.json -m <MODEL_NAME> -o results/position_bias__share/evaluation_<MODEL_NAME>.json`
- 8. Analyze the data
-    `mkdir figures`
-    `jupyter-notebook`
-    `# Open the notebook notebooks/initialBias_analysis.ipynb`
-    `# Execute the cells to generate the provided results`
+    ```bash
+    conda env create -n llm_positional_bias -f environment.yml
+    conda activate llm_bias_attack
+    export PYTHONPATH="$(pwd)/src"
+    ```
+ 3. Download products dataset
+    ```bash
+    mkdir -p data/dataset
+    # Download from https://www.kaggle.com/datasets/ashisparida/amazon-ml-challenge-2023
+    # Uncompress and place the CSV at data/dataset/train.csv
+    ```
+ 5. Generate search engine
+    ```bash
+    python scripts/dataset_creation/create_index.py -d data/dataset/train.csv -o data/amazon_index
+    ```
+ 7. Generate queries automatically
+    ```bash
+    python scripts/dataset_creation/generate_queries.py -o data/generated_queries.json
+    ```
+ 9. Create evaluation dataset
+    ```bash
+    mkdir data/shuffled_products`
+    python scripts/dataset_creation/sample_products_shuffles.py -i data/generated_queries.json -s data/amazon_index/ -o data/shuffled_products --output-name position_bias__share -n 0 -k 5 --share-permutations
+    ```
+ 11. Launch Ollama and pull model/s (available models at https://ollama.com/library?sort=newest)
+     ```bash
+     docker pull ollama/ollama:0.11.4
+     ./launch_ollama
+     docker exec ollama0 ollama pull <MODEL_NAME>
+     # The provided script assumes that one model fits on one GPU. Feel free to manually launch the container if it is not the case.
+     ```
+ 13. Process queries and associated products with one LLM (evaluate the LLM)
+     ```bash
+     mkdir -p results/position_bias__share
+     python scripts/evaluation/evaluate_bias.py -i data/shuffled_products/position_bias__share.json -m <MODEL_NAME> -o results/position_bias__share/evaluation_<MODEL_NAME>.json
+     ```
+ 15. Analyze the data
+     ```bash
+     mkdir figures
+     jupyter-notebook
+     # Open the notebook notebooks/initialBias_analysis.ipynb
+     # Execute the cells to generate the provided results
+     ```
+
+---
+
+If you find this work useful for your research, please cite it as the following.
+
+```bibtex
+<TBD>
+```
