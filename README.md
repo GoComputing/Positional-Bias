@@ -56,7 +56,7 @@ In order to replicate the paper results, the following steps should be followed.
     ```
  9. Create evaluation dataset
     ```bash
-    mkdir data/shuffled_products`
+    mkdir data/shuffled_products
     python scripts/dataset_creation/sample_products_shuffles.py -i data/generated_queries.json -s data/amazon_index/ -o data/shuffled_products --output-name position_bias__share -n 0 -k 5 --share-permutations
     ```
  11. Launch Ollama and pull model/s (available models at https://ollama.com/library?sort=newest)
