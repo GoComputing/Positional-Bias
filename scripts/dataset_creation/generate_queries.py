@@ -82,6 +82,9 @@ def main(args):
 
         queries.append(query)
 
+    # Remove duplicates
+    queries = list(dict.fromkeys(queries))
+
     # Save to a JSON file
     with open(output_path, "w") as f:
         json.dump(queries, f, indent=2)
@@ -92,7 +95,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Script to generate a dataset of user queries in different categories')
     parser.add_argument('-o', '--output-path', type=str, required=True, help='Path to store the queries, in JSON format')
     parser.add_argument('-s', '--seed', type=int, default=1234, help='Seed used to sample categories and patterns')
-    parser.add_argument('-n', '--size', type=int, default=1000, help='Number of queries to generate')
+    parser.add_argument('-n', '--max-size', type=int, default=1000, help='Maximum number of queries to generate before duplication delete')
 
     args = parser.parse_args()
 
