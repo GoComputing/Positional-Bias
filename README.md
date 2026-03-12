@@ -84,7 +84,7 @@ In order to replicate the paper results, the following steps should be followed.
      ```bash
      mkdir figures
      jupyter-notebook
-     # Open the notebook notebooks/initialBias_analysis.ipynb
+     # Open the notebook notebooks/bias_analysis.ipynb
      # Execute the cells to generate the provided results
      ```
 
