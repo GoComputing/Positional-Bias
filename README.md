@@ -12,7 +12,16 @@ This code allow the reproducibility of the experiments performed for bias detect
 
 ## 📄 Abstract
 
-Large Language Models (LLMs) have demonstrated impressive capabilities across a wide range of natural language tasks, including their use in building recommender systems (RS). Among these, conversational RS allow users to express preferences via text, enabling personalized item recommendations without model retraining. However, as black-box systems, LLM-based RS can exhibit hidden biases that compromise their reliability. This paper investigates positional bias—how the order of items in the prompt affects recommendation outcomes. We propose two methodologies: one based on contingency matrix analysis with statistical independence testing, and another grounded in a uniformity assumption. Our results reveal a consistent positional bias in LLM-based RS, even when item relevance is constant. These findings highlight the need for deeper auditing of prompt-based recommendation pipelines.
+Large Language Models (LLMs) are increasingly being used as recommendation generators in conversational recommender systems (RS) via retrieval-augmented generation (RAG). Although this design enables flexible, natural-language interaction, it also introduces new sources of structural bias that can affect the reliability of the system. This paper studies *positional bias* in LLM-based RS: systematic dependence of the recommended item on the order in which candidate items are presented in the prompt.
+
+We propose two complementary statistical methodologies to detect and characterize positional bias:
+
+1. **POB-ICM**, based on contingency matrix analysis and Chi-square independence testing, and
+2. **POB-UNBP**, a sample-efficient approach derived from a uniformity null model under permutation-based evaluation.
+
+Using a controlled RAG testbed built from 730 user queries and exhaustive permutations of *k* = 5 retrieved items (87,600 query-permutation instances), we find consistent evidence that recommendation outcomes are not invariant to item ordering. Across multiple state-of-the-art model families, both methodologies reject the null hypothesis of positional independence and uniformity under conventional significance thresholds (e.g., *p* = 2.42 × 10⁻¹¹⁶ for GPT-OSS 20B under POB-ICM).
+
+These results establish positional bias as a measurable and reproducible property of prompt-mediated recommendation pipelines and motivate routine auditing and governance controls (e.g., order randomization and standardized prompting) when deploying LLM-based RS in practice.
 
 ---
 
