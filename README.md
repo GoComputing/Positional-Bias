@@ -2,7 +2,7 @@
 
 This code allow the reproducibility of the experiments performed for bias detection in recommender systems based on Large Language Models.
 
-> **Authors**: Carlos Peláez-González, Andrés Herrera-Poyatos, Francisco Herrera Triguero
+> **Authors**: Carlos Peláez-González, Francisco Herrera-Triguero, Andrés Herrera-Poyatos
 > 
 > **Conference/Journal**: 
 >
