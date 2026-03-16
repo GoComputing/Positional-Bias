@@ -1,4 +1,4 @@
-# A statistical analysis of positional bias in LLM-Based Recommender Systems
+# Statistical Detection of Positional Bias in LLM-Based Recommender Systems: Methodology and Empirical Evidence
 
 This code allow the reproducibility of the experiments performed for bias detection in recommender systems based on Large Language Models.
 
