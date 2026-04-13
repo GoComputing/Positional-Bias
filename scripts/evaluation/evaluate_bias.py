@@ -50,8 +50,16 @@ def distribute_work(input_dataset_path, llm_name, hosts, output_path):
     results = {
         'input_dataset': input_dataset_path,
         'recommender_llm': llm_name,
-        'results': [None] * len(dataset['queries'])
     }
+
+    if os.path.exists(output_path):
+        with open(output_path, 'r') as f:
+            cached_results = json.load(f)
+        for key, value in results.items():
+            assert cached_results[key] == value
+        results['results'] = cached_results['results']
+    else:
+        results['results'] = [None] * len(dataset['queries'])
 
     # Split dataset and launch processes
     results_queue = multiprocessing.Queue()
@@ -65,9 +73,12 @@ def distribute_work(input_dataset_path, llm_name, hosts, output_path):
     for i in tqdm(range(len(dataset['queries'])), desc='Evaluation'):
         sample_info, sample_pos = results_queue.get()
         results['results'][sample_pos] = sample_info
-        break
 
-    # Store generated results
+        # Store generated results
+        if i%100 == 0:
+            with open(output_path, 'w') as f:
+                json.dump(results, f, indent=3)
+    
     with open(output_path, 'w') as f:
         json.dump(results, f, indent=3)
 
