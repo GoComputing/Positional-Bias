@@ -2,8 +2,8 @@
 
 CONTAINERS_BASENAME=ollama
 START_PORT=11434
-NUM_INSTANCES=1
-CUDA_DEVICES=(0)
+NUM_INSTANCES=9
+CUDA_DEVICES=("0" "0" "0" "1" "1" "1" "2" "2" "2")
 OLLAMA_DATAPATH=$(pwd)/../ollama_data:/root/.ollama
 
 
