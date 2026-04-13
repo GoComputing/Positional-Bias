@@ -2,13 +2,13 @@ from tools import load_llm, paraphrase_text
 from recommender import base_prompt_template
 
 from searchengine import AmazonSearchEngine
-from itertools import permutations
 from dotenv import load_dotenv
 from tqdm.auto import tqdm
 from copy import deepcopy
 import argparse
 import random
 import json
+import math
 import os
 
 models = {
@@ -41,6 +41,33 @@ models = {
         'nomodel:originaltext'
     ]
 }
+
+class RandomAccessPermutation:
+
+    def __init__(self, iterable):
+
+        self.iterable = [item for item in iterable]
+        self.factors = [math.factorial(i) for i in range(len(iterable))]
+        self.top_factor = math.factorial(len(iterable))
+
+    def __len__(self):
+
+        return self.top_factor
+    
+    def __getitem__(self, idx):
+
+        idx = idx % len(self)
+        if idx < 0:
+            idx = idx + self.len()
+
+        permutation = []
+        iterable = self.iterable[:]
+        for i in range(len(self.iterable)-1, -1, -1):
+            index = idx // self.factors[i]
+            permutation.append(iterable.pop(index))
+            idx = idx % self.factors[i]
+
+        return permutation
 
 def main(args):
 
@@ -187,7 +214,7 @@ def main(args):
         return permutations_list
 
     # Generate all possible permutations
-    permutations_population = list(permutations(range(top_k)))
+    permutations_population = RandomAccessPermutation(range(top_k))
 
     # Special case: if samples per query is less than 1, use all possible permutations
     permutations_quantity = samples_per_query
