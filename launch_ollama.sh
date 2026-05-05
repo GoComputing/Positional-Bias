@@ -1,8 +1,8 @@
 #!/bin/bash
 CONTAINERS_BASENAME=ollama
 START_PORT=11434
-NUM_INSTANCES=4
-CUDA_DEVICES=('"device=0"' '"device=1"' '"device=2"' '"device=3"')
+NUM_INSTANCES=8
+CUDA_DEVICES=('"device=0"' '"device=1"' '"device=2"' '"device=3"' '"device=4"' '"device=5"' '"device=6"' '"device=7"')
 OLLAMA_DATAPATH=$(pwd)/../ollama_data:/root/.ollama
 
 # Stop running containers

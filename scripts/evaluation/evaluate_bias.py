@@ -9,7 +9,7 @@ import json
 import sys
 import os
 
-def process_dataset(dataset, llm_name, llm_host, results_queue, process_id, num_processes):
+def process_dataset(dataset, results, llm_name, llm_host, results_queue, process_id, num_processes):
 
     # Load recommender LLM
     recommender_llm = load_llm(llm_name, base_url=llm_host)
@@ -21,24 +21,27 @@ def process_dataset(dataset, llm_name, llm_host, results_queue, process_id, num_
     for sample_pos in range(process_id, len(dataset['queries']), num_processes):
 
         query_info = dataset['queries'][sample_pos]
+        sample_info = results[sample_pos]
+        requires_generation = sample_info is None
 
-        response, parsed_response = generate_recommendation(
-            recommender_llm = recommender_llm,
-            titles          = [product['title'] for product in query_info['products']],
-            descriptions    = [product['description'] for product in query_info['products']],
-            query           = query_info['query'],
-            prompt_template = prompt_template
-        )
+        if requires_generation:
+            response, parsed_response = generate_recommendation(
+                recommender_llm = recommender_llm,
+                titles          = [product['title'] for product in query_info['products']],
+                descriptions    = [product['description'] for product in query_info['products']],
+                query           = query_info['query'],
+                prompt_template = prompt_template
+            )
 
-        sample_info = {
-            'query': query_info['query'],
-            'attack_pos': query_info['attack_pos'] if 'attack_pos' in query_info else None,
-            'predicted_pos': parsed_response['article_number'] if parsed_response is not None else None,
-            'response': response,
-            'parsed_response': parsed_response
-        }
+            sample_info = {
+                'query': query_info['query'],
+                'attack_pos': query_info['attack_pos'] if 'attack_pos' in query_info else None,
+                'predicted_pos': parsed_response['article_number'] if parsed_response is not None else None,
+                'response': response,
+                'parsed_response': parsed_response
+            }
 
-        results_queue.put((sample_info, sample_pos))
+        results_queue.put((sample_info, sample_pos, requires_generation))
 
 def distribute_work(input_dataset_path, llm_name, hosts, output_path):
 
@@ -65,19 +68,23 @@ def distribute_work(input_dataset_path, llm_name, hosts, output_path):
     results_queue = multiprocessing.Queue()
     processes = []
     for i, llm_host in enumerate(hosts):
-        process = multiprocessing.Process(target=process_dataset, args=(dataset, llm_name, llm_host, results_queue, i, len(hosts)))
+        process = multiprocessing.Process(target=process_dataset, args=(dataset, results['results'], llm_name, llm_host, results_queue, i, len(hosts)))
         process.start()
         processes.append(process)
 
     # Collect all results
+    requires_update = False
     for i in tqdm(range(len(dataset['queries'])), desc='Evaluation'):
-        sample_info, sample_pos = results_queue.get()
+        sample_info, sample_pos, is_updated = results_queue.get()
         results['results'][sample_pos] = sample_info
+        if is_updated:
+            requires_update = True
 
         # Store generated results
-        if i%100 == 0:
+        if i%100 == 0 and requires_update:
             with open(output_path, 'w') as f:
                 json.dump(results, f, indent=3)
+            requires_update = False
     
     with open(output_path, 'w') as f:
         json.dump(results, f, indent=3)
