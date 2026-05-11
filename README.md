@@ -70,7 +70,7 @@ In order to replicate the paper results, the following steps should be followed.
     ```
  6. Launch Ollama and pull model/s (available models at https://ollama.com/library?sort=newest)
      ```bash
-     docker pull ollama/ollama:0.11.4
+     docker pull ollama/ollama:0.23.1
      ./launch_ollama.sh
      docker exec ollama0 ollama pull <MODEL_NAME>
      # The provided script assumes that one model fits on one GPU. Feel free to manually launch the container if it is not the case.
