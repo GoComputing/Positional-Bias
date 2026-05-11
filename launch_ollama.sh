@@ -25,5 +25,5 @@ for (( i=0; $i<$NUM_INSTANCES; i=$i+1 )); do
        let port="$START_PORT+$i"
        name="${CONTAINERS_BASENAME}${i}"
        gpu_id=${CUDA_DEVICES[$i]}
-       docker run -d --gpus "$gpu_id" -v "$OLLAMA_DATAPATH" -p $port:11434 --name $name ollama/ollama:0.11.4
+       docker run -d --gpus "$gpu_id" -v "$OLLAMA_DATAPATH" -p $port:11434 --name $name ollama/ollama:0.23.1
 done
